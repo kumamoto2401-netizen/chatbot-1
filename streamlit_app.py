@@ -5,14 +5,15 @@ import google.generativeai as genai
 st.title("💬 Chatbot")
 st.write(
     "This is a simple chatbot that uses Google's Gemini Flash-2.5 model to generate responses. "
-    "To use this app, you need to provide a Google Generative AI API key, which you can get [here](https://makersuite.google.com/app/apikey). "
+    "To use this app, you need to set your Gemini API key in Streamlit secrets. "
     "See [Google Generative AI documentation](https://ai.google.dev/) for more details."
 )
 
-# Ask user for their Google Generative AI API key via `st.text_input`.
-api_key = st.text_input("Google Generative AI API Key", type="password")
+# Read Gemini API key from Streamlit secrets
+api_key = st.secrets.get("gemini_api_key", "")
+
 if not api_key:
-    st.info("Please add your Google Generative AI API key to continue.", icon="🗝️")
+    st.info("Please add your Gemini API key to .streamlit/secrets.toml as 'gemini_api_key' to continue.", icon="🗝️")
 else:
     # Configure Google Generative AI client
     genai.configure(api_key=api_key)
