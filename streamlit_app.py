@@ -75,3 +75,11 @@ else:
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
         except Exception as e:
             st.error(f"エラー: {e}")
+
+with st.chat_message("assistant"):
+    full_response = ""
+    for chunk in response_stream:
+        if chunk.candidates and chunk.candidates[0].content.parts:
+            part = chunk.candidates[0].content.parts[0].text
+            full_response += part
+    st.markdown(full_response)
