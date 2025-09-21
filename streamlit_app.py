@@ -1,35 +1,40 @@
 import streamlit as st
 import google.generativeai as genai
 
-# タイトルと説明を表示
 st.title("💬 チャットボット")
 st.write(
     "このチャットボットは Google Gemini Flash-2.5 モデルを使って回答を生成します。"
 )
 
-# Gemini API キーを Streamlit シークレットから取得
 api_key = st.secrets.get("gemini_api_key", "")
 
 if not api_key:
     st.info("Gemini API キーを .streamlit/secrets.toml の 'gemini_api_key' に追加してください。", icon="🗝️")
 else:
-    # Google Generative AI クライアントの設定
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel("gemini-2.5-flash")
 
     # チャットメッセージ保存用のセッションステート変数
     if "messages" not in st.session_state:
-        # システムプロンプトを最初に追加（role: userにする）
+        # 最初のプロンプトを追加
         st.session_state.messages = [
             {
                 "role": "user",
                 "content": "渋沢栄一についてのクイズを２問、出題して"
             }
         ]
+        # Gemini APIで最初のクイズ回答を取得して追加
+        history = [{"role": "user", "parts": ["渋沢栄一についてのクイズを２問、出題して"]}]
+        try:
+            response = model.generate_content(history)
+            # Gemini APIの回答本文を取得
+            content = response.candidates[0].content.parts[0].text
+            st.session_state.messages.append({"role": "assistant", "content": content})
+        except Exception as e:
+            st.session_state.messages.append({"role": "assistant", "content": f"エラー: {e}"})
 
     # 既存のチャットメッセージを表示
     for message in st.session_state.messages:
-        # 最初のプロンプトは案内のため非表示
         if message["role"] == "system":
             continue
         with st.chat_message("user" if message["role"] == "user" else "assistant"):
@@ -48,15 +53,12 @@ else:
                 history.append({"role": "user", "parts": [m["content"]]})
             elif m["role"] == "assistant":
                 history.append({"role": "model", "parts": [m["content"]]})
-            # "system" ロールは含めない
 
-        # Gemini API で回答生成
         try:
             response_stream = model.generate_content(
                 history,
                 stream=True,
             )
-            # ストリームで回答を表示
             with st.chat_message("assistant"):
                 full_response = ""
                 for chunk in response_stream:
