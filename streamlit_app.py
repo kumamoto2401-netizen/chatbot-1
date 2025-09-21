@@ -19,17 +19,17 @@ else:
 
     # チャットメッセージ保存用のセッションステート変数
     if "messages" not in st.session_state:
-        # システムプロンプトを最初に追加
+        # システムプロンプトを最初に追加（role: userにする）
         st.session_state.messages = [
             {
-                "role": "system",
+                "role": "user",
                 "content": "渋沢栄一についてのクイズを２問、出題して"
             }
         ]
 
     # 既存のチャットメッセージを表示
     for message in st.session_state.messages:
-        # "system" ロールは案内のため非表示
+        # 最初のプロンプトは案内のため非表示
         if message["role"] == "system":
             continue
         with st.chat_message("user" if message["role"] == "user" else "assistant"):
@@ -44,13 +44,11 @@ else:
         # Gemini API 用に履歴を整形
         history = []
         for m in st.session_state.messages:
-            # "system" ロールは最初のシステムプロンプトとして渡す
-            if m["role"] == "system":
-                history.append({"role": "system", "parts": [m["content"]]})
-            elif m["role"] == "user":
+            if m["role"] == "user":
                 history.append({"role": "user", "parts": [m["content"]]})
             elif m["role"] == "assistant":
                 history.append({"role": "model", "parts": [m["content"]]})
+            # "system" ロールは含めない
 
         # Gemini API で回答生成
         try:
