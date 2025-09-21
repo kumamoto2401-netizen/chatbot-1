@@ -15,7 +15,7 @@ if not api_key:
 else:
     # Google Generative AI クライアントの設定
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+    model = genai.GenerativeModel("gemini-2.5-flash")
 
     # チャットメッセージ保存用のセッションステート変数
     if "messages" not in st.session_state:
