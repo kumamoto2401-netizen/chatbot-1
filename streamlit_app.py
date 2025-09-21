@@ -28,11 +28,11 @@ else:
         st.session_state.messages = [
             {
                 "role": "user",
-                "content": "渋沢栄一についてのクイズを２問、出題して"
+                "content": sp1
             }
         ]
         # アプリ起動時にクイズ出題（Gemini API呼び出し）
-        history = [{"role": "user", "parts": ["渋沢栄一についてのクイズを２問、出題して"]}]
+        history = [{"role": "user", "parts": [sp1]}]
         try:
             response = model.generate_content(history)
             content = response.candidates[0].content.parts[0].text
