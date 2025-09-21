@@ -8,6 +8,10 @@ st.write(
 
 api_key = st.secrets.get("gemini_api_key", "")
 
+sp1 = '''
+渋沢栄一についてのクイズを２問、出題して
+'''
+
 if not api_key:
     st.info("Gemini API キーを .streamlit/secrets.toml の 'gemini_api_key' に追加してください。", icon="🗝️")
 else:
@@ -20,11 +24,11 @@ else:
         st.session_state.messages = [
             {
                 "role": "user",
-                "content": "渋沢栄一についてのクイズを２問、出題して"
+                "content": sp1
             }
         ]
         # Gemini APIで最初のクイズ回答を取得して追加
-        history = [{"role": "user", "parts": ["渋沢栄一についてのクイズを２問、出題して"]}]
+        history = [{"role": "user", "parts": [sp1]}]
         try:
             response = model.generate_content(history)
             # Gemini APIの回答本文を取得
