@@ -9,7 +9,7 @@ import google.generativeai as genai
 # タイトルと説明を表示
 st.title("💬 チャットボット")
 st.write(
-    "このチャットボットは Google Gemini Flash-2.5 モデルを使って回答を生成します。"
+    "このチャットボットは Google Gemini Flash-2.5 モデルを使って回答を生成します。（最初の立ち上がりには少し時間がかかります...）"
 )
 
 # Gemini API キーを Streamlit シークレットから取得
